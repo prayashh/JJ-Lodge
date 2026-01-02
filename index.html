@@ -20,21 +20,10 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="logo">
-            <i class="fa-solid fa-hotel"></i>
+            <img src="jj_lodge_vellore.png" alt="JJ Lodge Logo" style="height: 40px; width: auto;">
             JJ <span>Lodge</span>
         </div>
-        <div class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#home" class="nav-link">Home</a></li>
-            <li><a href="#about" class="nav-link">About</a></li>
-            <li><a href="#rooms" class="nav-link">Rooms</a></li>
-            <li><a href="#location" class="nav-link">Location</a></li>
-        </ul>
-        <!-- Book Now removed from here -->
+        <button id="bookBtnNav" class="btn-flashy">Book Now</button>
     </nav>
 
     <!-- Hero Section -->
@@ -48,7 +37,6 @@
             <p>Experience unmatched comfort and convenience right in the heart of Vellore. Steps away from CMC Hospital.
             </p>
             <div class="hero-btns">
-                <a href="#contact" class="btn-primary">Book Now</a>
                 <a href="#location" class="btn-outline">Find Us</a>
             </div>
         </div>
@@ -185,7 +173,7 @@
                 <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
                 <div class="info-content">
                     <h4>Phone</h4>
-                    <p>(0416) 2228940 <br> +91 0416 228 9400</p>
+                    <p>+91 04162289400</p>
                 </div>
             </div>
 
@@ -211,9 +199,11 @@
         <h2 class="animate-on-scroll zoom-in">Ready for a Comfortable Stay?</h2>
         <p class="animate-on-scroll zoom-in delay-100">Book your room today at JJ Lodge and experience the best
             hospitality in Vellore at unbeatable prices.</p>
-        <a href="tel:04162228940" class="btn-outline btn-pulse animate-on-scroll zoom-in delay-200"
-            style="border-color: white; color: white;">Call to Book: (0416)
-            2228940</a>
+        <button id="bookBtnCta" class="btn-flashy animate-on-scroll zoom-in delay-200" style="margin-bottom: 1rem;">Book
+            Now</button>
+        <div class="animate-on-scroll zoom-in delay-200" style="margin-bottom: 1rem; font-weight: 600;">OR</div>
+        <a href="tel:919500328925" class="btn-outline btn-pulse animate-on-scroll zoom-in delay-300"
+            style="border-color: white; color: white;">Call to Book: +91 95003 28925</a>
     </section>
 
     <!-- Footer -->
@@ -249,8 +239,60 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; 2024 JJ Lodge Vellore. All Rights Reserved.</p>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">Designed & Crafted by <span
+                    style="color: var(--accent);">Prayash Sharma</span> - UI/UX Designer</p>
         </div>
     </footer>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2>Book Your Stay</h2>
+                <p>Fill in the details to request a booking.</p>
+            </div>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="personCount">Number of Persons</label>
+                    <div class="stepper-wrapper">
+                        <button type="button" class="stepper-btn" id="decreasePerson"><i
+                                class="fa-solid fa-minus"></i></button>
+                        <input type="number" id="personCount" min="1" value="1" readonly>
+                        <button type="button" class="stepper-btn" id="increasePerson"><i
+                                class="fa-solid fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="arrivalDate">Arrival Date</label>
+                    <input type="date" id="arrivalDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" placeholder="9876543210" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Proceed on
+                    WhatsApp</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- WhatsApp Confirmation Modal -->
+    <div id="waConfirmModal" class="modal">
+        <div class="modal-content small-modal">
+            <h3>Open WhatsApp?</h3>
+            <p>You will be redirected to WhatsApp to send these details to our reception desk.</p>
+            <div class="modal-actions">
+                <button id="cancelWaBtn" class="btn-outline"
+                    style="color: var(--text-dark); border-color: #cbd5e1;">Cancel</button>
+                <button id="confirmWaBtn" class="btn-primary"><i class="fa-brands fa-whatsapp"></i> Continue</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Smooth scrolling for navigation
@@ -273,21 +315,6 @@
             }
         });
 
-        // Mobile Menu Toggle
-        const mobileMenu = document.getElementById('mobile-menu');
-        const navLinks = document.querySelector('.nav-links');
-
-        mobileMenu.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-
-        // Close menu when a link is clicked
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
-
         // Intersection Observer for Animations
         const observerOptions = {
             threshold: 0.1,
@@ -306,6 +333,109 @@
         document.querySelectorAll('.animate-on-scroll').forEach(el => {
             observer.observe(el);
         });
+
+        // Booking Modal Logic
+        const bookBtn = document.getElementById('bookBtnNav');
+        const bookBtnCta = document.getElementById('bookBtnCta');
+        const modal = document.getElementById('bookingModal');
+        const closeModal = document.querySelector('.close-modal');
+        const bookingForm = document.getElementById('bookingForm');
+        const waConfirmModal = document.getElementById('waConfirmModal');
+        const confirmWaBtn = document.getElementById('confirmWaBtn');
+        const cancelWaBtn = document.getElementById('cancelWaBtn');
+
+        let formDataValues = {};
+
+        // Open Modal
+        bookBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        if (bookBtnCta) {
+            bookBtnCta.addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+        }
+
+        // Close Modals
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+            if (e.target === waConfirmModal) {
+                waConfirmModal.style.display = 'none';
+            }
+        });
+
+        // Handle Form Submit
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Basic Validation
+            const name = document.getElementById('name').value.trim();
+            const personCount = document.getElementById('personCount').value;
+            const date = document.getElementById('arrivalDate').value;
+            const phone = document.getElementById('phoneNumber').value.trim();
+
+            if (!name || !personCount || !date || !phone) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            formDataValues = { name, personCount, date, phone };
+
+            // Show Confirmation
+            waConfirmModal.style.display = 'flex';
+        });
+
+        // WhatsApp Confirmation
+        cancelWaBtn.addEventListener('click', () => {
+            waConfirmModal.style.display = 'none';
+        });
+
+        confirmWaBtn.addEventListener('click', () => {
+            const { name, personCount, date, phone } = formDataValues;
+            // Format Message
+            const message = `*Room Booking Inquiry*%0A---------------------------%0A*Name:* ${name}%0A*Persons:* ${personCount}%0A*Arrival Date:* ${date}%0A*Phone:* ${phone}%0A---------------------------%0APlease confirm availability.`;
+
+            // Create WhatsApp URL
+            const waNumber = "919500328925";
+
+            const url = `https://wa.me/${waNumber}?text=${message}`;
+
+            window.open(url, '_blank');
+            waConfirmModal.style.display = 'none';
+            modal.style.display = 'none';
+            bookingForm.reset();
+        });
+
+        // Set Min Date to Today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('arrivalDate').setAttribute('min', today);
+
+        // Stepper Logic
+        const personInput = document.getElementById('personCount');
+        const decreaseBtn = document.getElementById('decreasePerson');
+        const increaseBtn = document.getElementById('increasePerson');
+
+        decreaseBtn.addEventListener('click', () => {
+            let val = parseInt(personInput.value);
+            if (val > 1) {
+                personInput.value = val - 1;
+            }
+        });
+
+        increaseBtn.addEventListener('click', () => {
+            let val = parseInt(personInput.value);
+            if (val < 20) { // Reasonable limit
+                personInput.value = val + 1;
+            }
+        });
+
     </script>
 </body>
 
